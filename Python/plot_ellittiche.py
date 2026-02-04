@@ -4,7 +4,7 @@ import os
 import math
 
 def genera_grafici_tesi(nome_file_csv):
-    output_dir = "grafici_ellittiche3"
+    output_dir = "grafici_ellittiche"
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
         print(f"Cartella '{output_dir}' creata.")
@@ -23,7 +23,7 @@ def genera_grafici_tesi(nome_file_csv):
             if len(parti) < 5: continue
 
             q_str = parti[0]
-            nome_output = os.path.join(output_dir, f"istogramma2_q_{q_str}.png")
+            nome_output = os.path.join(output_dir, f"istogramma_q_{q_str}.png")
 
             if os.path.exists(nome_output):
                 print(f"Grafico per q={q_str} già esistente. Salto...")
@@ -102,6 +102,4 @@ def genera_grafici_tesi(nome_file_csv):
     print("Generazione completata.")
 
 if __name__ == "__main__":
-    # Assicurati che il nome del file CSV sia corretto
-    # Se lo hai rinominato in "ellittiche_stats.csv", cambia la riga qui sotto.
-    genera_grafici_tesi("dati_per_plot_ellittiche2.csv")
+    genera_grafici_tesi("ellittiche_dati.csv")
