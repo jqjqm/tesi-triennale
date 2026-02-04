@@ -14,7 +14,7 @@ counthyperelliptic := procedure(q,text_filename)
     
     // Matrice output 
     M := ZeroMatrix(Integers(), 2, 2*q+3);
-    for i in [1..2*q+2] do M[1,i] := i-1; end for;
+    for i in [1..2*q+3] do M[1,i] := i-1; end for;
 
     R<t> := PolynomialRing(FF); // Per discriminante comodo
 
@@ -134,4 +134,5 @@ if assigned q then
     // Il CSV viene generato automaticamente con nome fisso dentro la procedura.
     counthyperelliptic(StringToInteger(q), "report_iperellittiche.txt");
 end if;
+
 quit;
