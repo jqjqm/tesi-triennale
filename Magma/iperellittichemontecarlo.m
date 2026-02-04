@@ -3,7 +3,7 @@ save_for_python := procedure(q, freq, m2, m4, m6, perc_even)
     csv_filename := "dati_per_plot_iperellittiche_mc.csv";
     F := Open(csv_filename, "a");
     
-    // Formatta i momenti
+
     momenti_str := Sprintf("%o,%o,%o", 
                    RealField(5)!m2, 
                    RealField(5)!m4, 
@@ -22,7 +22,7 @@ counthyperelliptic := procedure(q,N,text_filename)
     FF := FiniteField(q);
     q_real := Real(q);
     scale := Sqrt(q_real);
-    mean_theoretical := q_real + 1; // Aggiunto
+    mean_theoretical := q_real + 1;
     
     // Array di frequenze: indice 0..2q+2 (2q+3 elementi)
     freq := [0 : i in [1..2*q+3]];
@@ -57,7 +57,6 @@ counthyperelliptic := procedure(q,N,text_filename)
             
             pts_twist := 2*q + 2 - pts;
             
-            // CORREZIONE: freq[pts] invece di freq[pts+1]
             freq[pts+1] +:= 1;
             freq[pts_twist+1] +:= 1;
             
@@ -79,7 +78,6 @@ counthyperelliptic := procedure(q,N,text_filename)
     m4_avg := m4 / (2*N);
     m6_avg := m6 / (2*N);
     
-    // CORREZIONE: i sono gli indici (numero punti), quindi IsEven(i)
     even_curves := &+[freq[i] : i in [1..2*q+3] | IsEven(i-1)];
     perc_even := 100.0 * even_curves / (2*N);
 
@@ -117,4 +115,5 @@ end procedure;
 if assigned q then
     counthyperelliptic(StringToInteger(q), StringToInteger(N), "report_iperellittiche_mc.txt");
 end if;
+
 quit;
