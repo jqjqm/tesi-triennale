@@ -21,7 +21,7 @@ counthypellpari := procedure(q, text_filename)
     m2 := 0.0; m4 := 0.0; m6 := 0.0; // Momenti pari
     
     g := PrimitiveElement(FF);
-    d := gcd(q-1,6);
+    d := Gcd(q-1,6);
     L := [g^i : i in [0..d-1]]; // Rappresentanti per i termini noti
 
     // Bound empirici osservati per la famiglia completa
@@ -116,4 +116,5 @@ if assigned q then
     // Il CSV viene generato automaticamente con nome fisso dentro la procedura.
     counthypellpari(StringToInteger(q), "report_iperellittiche_pari.txt");
 end if;
+
 quit;
