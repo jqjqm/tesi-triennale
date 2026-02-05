@@ -87,9 +87,9 @@ counthypellpari := procedure(q, text_filename)
         fprintf F_text, "RISULTATI PER CAMPO q = %o\n", q;
         Puts(F_text, "========================================");
         fprintf F_text, "Totale curve: %o\n", tot_curves;
-        fprintf F_text, "Momento 2 (varianza): %.6f\n", m2_avg;
-        fprintf F_text, "Momento 4: %.6f\n", m4_avg;
-        fprintf F_text, "Momento 6: %.6f\n", m6_avg;
+        fprintf F_text, "Momento 2 (varianza): %o\n", m2_avg;
+        fprintf F_text, "Momento 4: %o\n", m4_avg;
+        fprintf F_text, "Momento 6: %o\n", m6_avg;
         Puts(F_text, "--- Distribuzione ---");
         // Stampiamo solo i non-zeri nel report per leggibilità
         for i in [1..Ncols(M)] do
@@ -118,3 +118,4 @@ if assigned q then
 end if;
 
 quit;
+
