@@ -38,7 +38,7 @@ counting := procedure(q, text_filename)
                 total_twist := q + 1 + t;
                 idx_twist := total_twist - lower + 1;
                 M[2, idx_twist] +:= (q-1) div 2;
-            elif j eq 1728  then
+            elif j eq 1728 and q mod 3 ne 0 then
                 E1 := EllipticCurve([FF|0,0,0,1,0]);
                 t := TraceOfFrobenius(E1);
                 total := q + 1 - t;
@@ -88,6 +88,53 @@ counting := procedure(q, text_filename)
                     idx_twist3 := total_twist3 - lower + 1;
                     M[2, idx_twist3] +:= (q-1) div 6;
                 end if;
+            else
+                if q-1 mod 8 eq 0 then
+                    k := 0;
+                    i := RootOfUnity(4, FF);
+                    while k le n and Trace(g^k) eq 0 do
+                        k +:= 1;
+                    end while;
+                    gamma := -i*g^k;
+                    
+                    E0 := EllipticCurve([FF|0,0,0,1,0]);
+                    t0 := TraceOfFrobenius(E0);
+                    total0 := q+1-t0;
+                    idx0 := total0 - lower + 1;
+                    M[2, idx0] +:= q*(q-1) div 12;
+                    total1 := q + 1 + t0;
+                    idx1 := total1 - lower + 1;
+                    M[2, idx1] +:= q*(q-1) div 12;
+
+                    E2 := EllipticCurve([FF|0,0,0,g,0]);
+                    t2 := TraceOfFrobenius(E2);
+                    total2 := q+1-t2;
+                    idx2 := total2 - lower + 1;
+                    M[2, idx2] +:= q*(q-1) div 4;
+                    total3 := q + 1 + t2;
+                    idx3 := total3 - lower + 1;
+                    M[2, idx3] +:= q*(q-1) div 4;
+
+                    E4 := EllipticCurve([FF|0,0,0,1,gamma]);
+                    t4 := TraceOfFrobenius(E4);
+                    total4 := q + 1 - t4;
+                    idx4 := total4 - lower + 1;
+                    M[2,idx4] +:= q*(q-1) div 6;
+                    total5 := q +1 + t4;
+                    idx5 := total5 - lower + 1;
+                    M[2,idx5] := q*(q-1) div 6;
+                else
+                    idx := q + 1 - lower + 1;
+                    M[2, idx] +:= q*(q-1);
+
+                    E := EllipticCurve([FF|0,0,0,-1,1]);
+                    t := TraceOfFrobenius(E);
+                    total := q + 1 - t;
+                    idx := total - lower + 1;
+                    M[2,idx] +:= q*(q-1) div 6;
+                    total2 := q + 1 + t;
+                    idx2 := total2 - lower + 1;
+                    M[2,idx2] +:= q*(q-1) div 6;
             end if;
         end for;
     else 
