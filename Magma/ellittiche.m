@@ -97,14 +97,16 @@ counting := procedure(q, text_filename)
                     M[2, idx_twist3] +:= (q-1) div 6;
                 end if;
             else
-                if q-1 mod 8 eq 0 then
+                if Degree(FF) ne 0 mod 3
+                    gamma := 1;
+                else
                     k := 0;
                     i := RootOfUnity(4, FF);
                     while k le Degree(FF) and Trace(g^k) eq 0 do
                         k +:= 1;
                     end while;
                     gamma := -i*g^k;
-                    
+                if q-1 mod 8 eq 0 then
                     E0 := EllipticCurve([FF|0,0,0,1,0]);
                     t0 := TraceOfFrobenius(E0);
                     total0 := q+1-t0;
@@ -135,7 +137,7 @@ counting := procedure(q, text_filename)
                     idx := q + 1 - lower + 1;
                     M[2, idx] +:= 2*q*(q-1) div 3;
 
-                    E := EllipticCurve([FF|0,0,0,-1,1]);
+                    E := EllipticCurve([FF|0,0,0,-1,gamma]);
                     t := TraceOfFrobenius(E);
                     total := q + 1 - t;
                     idx := total - lower + 1;
