@@ -20,7 +20,10 @@ Script implementati nel linguaggio di algebra computazionale **MAGMA** per il ca
     * Per campi con cardinalità più alta, analisi della distribuzione tramite metodo **Monte Carlo**.
 
 * **Curve di Genere 2 di equazione $y^2=f(x^2)$:**
-   * Analisi della distribuzione dei punti per curve di  genere 2 del tipo $y^2=f(x^2)$ sfruttando le curve quoziente e le relative tracce.
+   * Analisi della distribuzione dei punti per curve di genere 2 del tipo $y^2=f(x^2)$ sfruttando le curve quoziente e le relative tracce.
+ 
+* **Quartiche piane:**
+   * Analisi della distribuzione dei punti per curve lisce di equazione $F(X,Y,Z)=0$ con $F$ un polinomio omogeneo di grado 4. 
 
 ### `Data/` - Dataset Sperimentali
 Risultati delle computazioni salvati in formato `.csv` e report riassuntivi in `.txt`.
