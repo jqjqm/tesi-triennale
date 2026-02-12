@@ -3,7 +3,6 @@ save_for_python := procedure(q, freq, m1, m2, m3, m4, m5, m6, variance, perc_eve
     csv_filename := "quartiche_piane_dati.csv";
     F := Open(csv_filename, "a");
     
-    // Formatta i momenti
     momenti_str := Sprintf("%o,%o,%o,%o,%o,%o,%o", 
                    RealField(5)!m1,
                    RealField(5)!m2,
@@ -13,7 +12,6 @@ save_for_python := procedure(q, freq, m1, m2, m3, m4, m5, m6, variance, perc_eve
                    RealField(5)!m6,
                    RealField(5)!variance);
     
-    // Scrive: q; punti...; freq...; momenti...
     fprintf F, "%o;%o;%o;%o\n", 
               q, 
               [i-1 : i in [1..#freq]],  // punti (indice 1 -> 0 punti)
@@ -58,16 +56,21 @@ counting := procedure(q, N, text_filename)
 
     while count lt N do
         A := [Random(FF) : i in [1..15]];
-        
+
+        // Controllo liscezza
         // Check rapido punto [1:0:0]
         if A[1] eq 0 and A[2] eq 0 and A[3] eq 0 then
             continue;
         end if;
 
-        // --- CHECK INFINITO ---
+        // Controllo su Z=0, Y=1
         F_inf := A[1]*t^4 + A[2]*t^3 + A[4]*t^2 + A[7]*t + A[11];
         F_infX := 4*A[1]*t^3 + 3*A[2]*t^2 + 2*A[4]*t + A[7];
         
+        if F_inf eq 0 then
+            continue; // Non è una quartica (Z=0)
+        end if;
+
         g := Gcd(F_inf, F_infX);
         if Degree(g) gt 0 then
             F_infZ := A[3]*t^3 + A[5]*t^2 + A[8]*t + A[12];
@@ -77,7 +80,7 @@ counting := procedure(q, N, text_filename)
             end if;
         end if;
 
-        // --- CHECK AFFINE ---
+        // controllo su Z=1
         f_aff := &+[ A[i] * Monomi_Affini[i] : i in [1..15] ];
         df_dx := Derivative(f_aff, 1); 
         df_dy := Derivative(f_aff, 2); 
@@ -88,11 +91,12 @@ counting := procedure(q, N, text_filename)
             continue; // Singolare affine
         end if;
 
-        // --- CONTEGGIO PUNTI ---
         count +:= 1;
+
+        // Conteggio punti
         pts := 0;
 
-        // 1. Punti all'infinito (sulla carta Y=1, Z=0)
+        // Punti all'infinito (sulla carta Y=1, Z=0)
         // Usiamo Modexp su anello univariato R<t>
         h := Modexp(t, q, F_inf);
         pts +:= Degree(Gcd(F_inf, h - t));
@@ -102,31 +106,23 @@ counting := procedure(q, N, text_filename)
             pts +:= 1;
         end if;
 
-        // 3. Punti Affini
-        // Iteriamo su y. Per ogni valore, otteniamo un poli in x.
+       // 3. Punti Affini
         for y0 in FF do
-            // Valutiamo f_aff in y=y0. 
-            // ATTENZIONE: Evaluate restituisce un poli in R_aff. 
-            // Dobbiamo convertirlo in R<t> per usare Modexp e Gcd efficienti.
-            
-            f_val_multi := Evaluate(f_aff, [x, y0]); // Resta in R_aff
-            
-            
-            coeffs := Coefficients(f_val_multi, x); 
-            f_univar := Polynomial(R, coeffs); // Ora è in R<t>
-            
+            // Mappiamo R_aff -> R: x diventa R.1, y diventa la costante y0. Serve per rendere f(x,y0) un polinomio in una sola variabile R.1
+            h_map := hom< R_aff -> R | R.1, y0 >;
+            f_univar := h_map(f_aff);
+
             if Degree(f_univar) gt 0 then
-                h2 := Modexp(t, q, f_univar); // t è il generatore di R
-                pts +:= Degree(Gcd(f_univar, h2 - t));
+                h2 := Modexp(R.1, q, f_univar);
+                pts +:= Degree(Gcd(f_univar, h2 - R.1));
             end if;
         end for;
         
-        // Aggiorna istogramma
         if (pts + 1) le #freq then
             freq[pts + 1] +:= 1;
         end if;
 
-        // --- MOMENTI ---
+        // Calcolo momenti
         // Il valore normalizzato è z = t_frob / sqrt(q)
         
         trace := q_real + 1.0 - RealField()!pts;
@@ -142,7 +138,7 @@ counting := procedure(q, N, text_filename)
     m_avg := [m[i] / N : i in [1..6]];
     variance := m_avg[2] - m_avg[1]^2;
 
-    // --- OUTPUT TESTO ---
+    // Output testuale
     F_text := Open(text_filename, "a");
     
     Puts(F_text, "\n========================================");
@@ -153,8 +149,8 @@ counting := procedure(q, N, text_filename)
     fprintf F_text, "Percentuale pari: %o%%\n", RealField(5)!perc_even;
     
     Puts(F_text, "\n--- Momenti della Traccia Normalizzata (t/sqrt(q)) ---");
-    fprintf F_text, "m1: %o\n", RealField(5)!m_avg[1];
-    fprintf F_text, "m2: %o\n", RealField(5)!m_avg[2];
+    fprintf F_text, "m1: %o \n", RealField(5)!m_avg[1];
+    fprintf F_text, "m2: %o \n", RealField(5)!m_avg[2];
     fprintf F_text, "m3: %o\n", RealField(5)!m_avg[3];
     fprintf F_text, "m4: %o\n", RealField(5)!m_avg[4];
     fprintf F_text, "m5: %o\n", RealField(5)!m_avg[5];
