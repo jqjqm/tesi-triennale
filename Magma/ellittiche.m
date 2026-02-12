@@ -1,5 +1,6 @@
 // Distribuzione punti F_q-razionali di curve ellittiche.
 
+//Procedure per salvare i dati in formato .csv
 save_for_python := procedure(q, M, mean, perc_even, csv_filename)
     F := Open(csv_filename, "a");
     punti := [Integers() | M[1,i] : i in [1..Ncols(M)]];
@@ -9,13 +10,14 @@ save_for_python := procedure(q, M, mean, perc_even, csv_filename)
     delete F;
 end procedure;
 
+//Procedure per il calcolo della distribuzione
 counting := procedure(q, text_filename)
     // Setup iniziale dato dal bound di Hasse.
     lower := Ceiling(q+1-2*Sqrt(q));
     upper := Floor(q+1+2*Sqrt(q));
     N := upper - lower + 1;
 
-    // Inizializza matrice per conteggi
+    // Inizializza matrice
     M := ZeroMatrix(Integers(), 2, N);
     for i in [1..N] do
         M[1,i] := lower+i-1;
@@ -24,29 +26,31 @@ counting := procedure(q, text_filename)
     // Insiemi di supporto
     FF := FiniteField(q);
     g := PrimitiveElement(FF);
-    // Precalcolo potenze
-    g2 := g^2;
 
-    if q mod 2 ne 0 then
+    if q mod 2 ne 0 then //Analizziamo il caso di caratteristica 2 a parte in maniera diretta
         for j in FF do
             if j ne 0 and j ne 1728 then
+            
                 E := EllipticCurve([FF|0,1/4,0,-36/(j-1728), -1/(j-1728)]);
                 t := TraceOfFrobenius(E);
                 total := q + 1 - t;
                 idx := total - lower + 1;
                 if q mod 3 eq 0 then
-                    M[2, idx] +:= q*(q-1) div 2;
+                    M[2, idx] +:= q*(q-1) div 2; //In caratteristica 3 per ogni curva ci sono q*(q-1) isomorfe tramite il cambio di variabili (x,y)->(u^2x+r,u^3y)
                 else
-                    M[2, idx] +:= (q-1) div 2;
+                    M[2, idx] +:= (q-1) div 2; //In caratteristica diversa da 2,3 le curve ellittiche hanno equazione y^2=x^3+Ax+B ed ognuna ha q curve isomorfe tramite (x,y)->(u^2x,u^3y)
                 end if;
-                total_twist := q + 1 + t;
+                
+                total_twist := q + 1 + t; //Analisi del twist quadratico
                 idx_twist := total_twist - lower + 1;
                 if q mod 3 eq 0 then
                     M[2, idx_twist] +:= q*(q-1) div 2;
                 else
                     M[2, idx_twist] +:= (q-1) div 2;
                 end if;
+                
             elif j eq 1728 and q mod 3 ne 0 then
+            
                 E1 := EllipticCurve([FF|0,0,0,1,0]);
                 t := TraceOfFrobenius(E1);
                 total := q + 1 - t;
@@ -55,7 +59,8 @@ counting := procedure(q, text_filename)
                 total_twist := q + 1 + t;
                 idx_twist := total_twist - lower + 1;
                 M[2, idx_twist] +:= (q-1) div 2;
-                if q mod 4 eq 1 then
+                
+                if q mod 4 eq 1 then //Il numero di classi di isomorfismo su F_q aumenta se 4|q-1
                     M[2, idx] := M[2, idx] div 2;
                     M[2, idx_twist] := M[2, idx_twist] div 2;
                     E2 := EllipticCurve([FF|0,0,0,g,0]);
@@ -67,7 +72,9 @@ counting := procedure(q, text_filename)
                     idx_twist2 := total_twist2 - lower + 1;
                     M[2, idx_twist2] +:= (q-1) div 4;
                 end if;
+                
             elif j eq 0 and q mod 3 ne 0 then
+            
                 E1 := EllipticCurve([FF|0,0,0,0,1]);
                 t := TraceOfFrobenius(E1);
                 total := q + 1 - t;
@@ -76,7 +83,8 @@ counting := procedure(q, text_filename)
                 total_twist := q + 1 + t;
                 idx_twist := total_twist - lower + 1;
                 M[2, idx_twist] +:= (q-1) div 2;
-                if q mod 3 eq 1 then
+                
+                if q mod 3 eq 1 then //Anche in questo caso il numero di classi di isomorfismo su F_q passa da 2 a 6
                     M[2, idx] := M[2, idx] div 3;
                     M[2, idx_twist] := M[2, idx_twist] div 3;
                     E2 := EllipticCurve([FF|0,0,0,0,g]);
@@ -87,7 +95,7 @@ counting := procedure(q, text_filename)
                     total_twist2 := q + 1 + t2;
                     idx_twist2 := total_twist2 - lower + 1;
                     M[2, idx_twist2] +:= (q-1) div 6;
-                    E3 := EllipticCurve([FF|0,0,0,0,g2]);
+                    E3 := EllipticCurve([FF|0,0,0,0,g^2]);
                     t3 := TraceOfFrobenius(E3);
                     total3 := q + 1 - t3;
                     idx3 := total3 - lower + 1;
@@ -96,17 +104,24 @@ counting := procedure(q, text_filename)
                     idx_twist3 := total_twist3 - lower + 1;
                     M[2, idx_twist3] +:= (q-1) div 6;
                 end if;
-            else
-                if Degree(FF) ne 0 mod 3
+                
+            else //j=0=1728 e q=3^n
+            
+                n := Degree(FF)
+                if n ne 0 mod 3 //Cerchiamo un elemento che non sia nell'immagine della mappa r^3 - r tra 1 e le potenze di g
                     gamma := 1;
                 else
                     k := 0;
-                    i := RootOfUnity(4, FF);
-                    while k le Degree(FF) and Trace(g^k) eq 0 do
+                    while k le n and Trace(g^k) eq 0 do
                         k +:= 1;
                     end while;
-                    gamma := -i*g^k;
-                if q-1 mod 8 eq 0 then
+                    gamma := g^k;
+                    
+                if q-1 mod 8 eq 0 then //Caso n pari, abbiamo 6 classi di isomorfismo su F_q
+                    
+                    i := RootOfUnity(4, FF);
+                    gamma := -i*gamma; //Il nuovo gamma non è nell'immagine di r^3+r
+                    
                     E0 := EllipticCurve([FF|0,0,0,1,0]);
                     t0 := TraceOfFrobenius(E0);
                     total0 := q+1-t0;
@@ -133,8 +148,10 @@ counting := procedure(q, text_filename)
                     total5 := q +1 + t4;
                     idx5 := total5 - lower + 1;
                     M[2,idx5] := q*(q-1) div 6;
-                else
-                    idx := q + 1 - lower + 1;
+                    
+                else //caso n dispari, 4 classi di isomorfismo su F_q
+                
+                    idx := q + 1 - lower + 1; //Due tra le quattro classi hanno traccia 0 quindi le aggiungiamo direttamente
                     M[2, idx] +:= 2*q*(q-1) div 3;
 
                     E := EllipticCurve([FF|0,0,0,-1,gamma]);
@@ -145,12 +162,14 @@ counting := procedure(q, text_filename)
                     total2 := q + 1 + t;
                     idx2 := total2 - lower + 1;
                     M[2,idx2] +:= q*(q-1) div 6;
+                    
                     end if;
             end if;
         end for;
     else 
         // Forma generale lunga Weierstrass:    
         for a_1,a_2,a_3,a_4,a_6 in FF do
+            //Controllo singolarità
             is_smooth:= true;
             if a_1 eq 0 then
                 if a_3 eq 0 then
@@ -166,7 +185,7 @@ counting := procedure(q, text_filename)
             if is_smooth then
                 
                 pts := 0;
-                
+                //Conteggio diretto
                 for x_val in FF do
                     for y_val in FF do
                         // f(x,y)
