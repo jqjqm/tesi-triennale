@@ -19,7 +19,8 @@ counthyperelliptic := procedure(q,text_filename)
     R<t> := PolynomialRing(FF); // Per discriminante comodo
 
     // CASO 1 a_6 = 0, a_5 != 0
-    if q mod 5 ne 0 then
+    if q mod 5 ne 0 then //Forma depressa
+    
         for a3,a2,a1,a0 in FF do
             poly_t := t^5 + a3*t^3 + a2*t^2 + a1*t + a0;
             if Discriminant(poly_t) ne 0 then
@@ -32,12 +33,14 @@ counthyperelliptic := procedure(q,text_filename)
                         pts +:= 2;
                     end if;
                 end for;
-                M[2, pts+1] +:= 1; // Sono tutte q-1 div 2 quindi la frequenza non cambia
-                M[2, 2*q+3-pts] +:= 1; // Curva con termine di testa g 
+                M[2, pts+1] +:= 1;
+                M[2, 2*q+3-pts] +:= 1; // Twist quadratico
             end if;
         end for;
+        
     else
-        for a4,a3,a2,a1,a0 in FF do
+    
+        for a4,a3,a2,a1,a0 in FF do //Forma completa
             poly_t := t^5 + a4*t^4 + a3*t^3 + a2*t^2 + a1*t + a0;
             if Discriminant(poly_t) ne 0 then
                 pts := 1; //a6=0->1 punto all'infinito
@@ -50,14 +53,15 @@ counthyperelliptic := procedure(q,text_filename)
                     end if;
                 end for;
                 M[2, pts+1] +:= 1;
-                M[2, 2*q+3-pts] +:= 1; // Curva con termine di testa g
+                M[2, 2*q+3-pts] +:= 1;
             end if;
         end for;
     end if;
 
     // CASO 2 a_6 != 0
     if q mod 2 ne 0 and q mod 3 ne 0 then
-        for a4,a3,a2,a1,a0 in FF do
+    
+        for a4,a3,a2,a1,a0 in FF do //Forma depressa
             poly_t := t^6 + a4*t^4 + a3*t^3 + a2*t^2 + a1*t + a0;
             if Discriminant(poly_t) ne 0 then
                 pts := 2; //a6=1, a6 quadrato-> 2 punti all'infinito
@@ -70,11 +74,13 @@ counthyperelliptic := procedure(q,text_filename)
                     end if;
                 end for;
                 M[2, pts+1] +:= 1;
-                M[2, 2*q+3-pts] +:= 1; // Curva con termine di testa g
+                M[2, 2*q+3-pts] +:= 1;
             end if;
         end for;
+        
     else
-        for a5,a4,a3,a2,a1,a0 in FF do
+    
+        for a5,a4,a3,a2,a1,a0 in FF do //Forma completa
             poly_t := t^6 + a5*t^5 + a4*t^4 + a3*t^3 + a2*t^2 + a1*t + a0;
             if Discriminant(poly_t) ne 0 then
                 pts := 2; //a6=1, a6 quadrato-> 2 punti all'infinito
@@ -87,7 +93,7 @@ counthyperelliptic := procedure(q,text_filename)
                     end if;
                 end for;
                 M[2, pts+1] +:= 1;
-                M[2, 2*q+3-pts] +:= 1; // Curva con termine di testa g
+                M[2, 2*q+3-pts] +:= 1; 
             end if;
         end for;
     end if;
@@ -136,3 +142,4 @@ if assigned q then
 end if;
 
 quit;
+
