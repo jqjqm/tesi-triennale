@@ -10,24 +10,25 @@ Il progetto analizza la distribuzione del numero di punti $\mathbb{F}_q$-raziona
 Script implementati nel linguaggio di algebra computazionale **MAGMA** per il calcolo della distribuzione dei punti.
 
 * **Curve Ellittiche (Genere 1):**
-    * **Ottimizzazione:** In caratteristica dispari, gli algoritmi sfruttano la classificazione per $j$-invariante e la teoria dei **twist quadratici** (e di ordine superiore per $j=0, 1728$) per ridurre drasticamente lo spazio delle curve da esaminare.
+    * **Ottimizzazione:** In caratteristica dispari, gli algoritmi sfruttano la classificazione per $j$-invariante e le classi di isomorfismo su $\mathbb F_q$ per ridurre drasticamente lo spazio delle curve da esaminare.
     * **Conteggio:** Il calcolo puntuale utilizza la funzione `TraceOfFrobenius`, basata sull'algoritmo di **Schoof** e sulle sue ottimizzazioni (Schoof-Elkies-Atkin, **SEA**).
-    * **Caratteristica 2:** Gestione dedicata tramite enumerazione diretta per le forme non riducibili.
+    * **Caratteristica 2:** Gestione dedicata tramite enumerazione diretta.
 
 * **Curve di Genere 2 di equazione $y^2=f(x)$:**
-    * Analisi della distribuzione dei punti per curve di genere 2 del tipo $y^2=f(x)$.
-    * Implementazione di strategie per la gestione del costo computazionale su campi finiti di piccola cardinalità, come la riduzione dello spazio dei coefficienti e l'uso della traccia dei twist quadratici.
-    * Per campi con cardinalità più alta, analisi della distribuzione tramite metodo **Monte Carlo**.
+    * **Ottimizzazione:** Per campi piccoli si sfruttano cambi di variabile ed osservazioni sul twist quadratico per ridurre lo spazio dei coefficienti. Per campi con cardinalità più alta, si analizza la distribuzione tramite metodo **Monte Carlo**.
+    * **Conteggio:** Per ogni $x$ in $\mathbb F_q$ si valuta il polinomio $f(x)$ e si conta il numero di soluzioni di $y^2=f(x)$.
 
 * **Curve di Genere 2 di equazione $y^2=f(x^2)$:**
-   * Analisi della distribuzione dei punti per curve di genere 2 del tipo $y^2=f(x^2)$ sfruttando le curve quoziente e le relative tracce.
+   * **Ottimizzazione:** Con strategie simili a quelle utilizzate per le famiglie precedenti si riduce lo spazio dei coefficienti.
+   *  **Conteggio:** Si calcolano le curve ellittiche quoziente e si ottengono le informazioni richieste dalle relative tracce. 
  
-* **Quartiche piane:**
-   * Analisi della distribuzione dei punti per curve lisce di equazione $F(X,Y,Z)=0$ con $F$ un polinomio omogeneo di grado 4. 
+* **Quartiche Piane:**
+    * **Metodologia:** Campionamento mediante metodo **Monte Carlo**.
+    * **Conteggio Punti:** Il processo sfrutta l'esponenziazione modulare del polinomio di Frobenius ($x^q \pmod{f}$) per determinare il numero di radici del polinomio della curva nelle diverse carte affini e sulla retta all'infinito.
 
 ### `Data/` - Dataset Sperimentali
 Risultati delle computazioni salvati in formato `.csv` e report riassuntivi in `.txt`.
-I file contengono le frequenze di curve per ogni numero di punti razionali ammissibile per vari valori della cardinalità $q$ ed alcuni indicatori statistici come media e ordine di parità.
+I file contengono le frequenze di curve per ogni numero di punti razionali ammissibile per vari valori della cardinalità $q$ ed alcuni indicatori statistici come media, ordine di parità e momenti di ordine vario.
 
 ---
 
