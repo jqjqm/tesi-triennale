@@ -63,9 +63,9 @@ counthypellpari := procedure(q, text_filename)
                     X_sq := X^2;
                     X_C2_sq := X_C2^2;
 
-                    m2 +:= (q-1) div 2 * (X_sq + X_C2_sq);
-                    m4 +:= (q-1) div 2 * (X_sq^2 + X_C2_sq^2);
-                    m6 +:= (q-1) div 2 * (X_sq^3 + X_C2_sq^3);
+                    m2 +:= (q-1) div d * (X_sq + X_C2_sq);
+                    m4 +:= (q-1) div d * (X_sq^2 + X_C2_sq^2);
+                    m6 +:= (q-1) div d * (X_sq^3 + X_C2_sq^3);
                 end if;
             end if;
         end for;
@@ -118,4 +118,5 @@ if assigned q then
 end if;
 
 quit;
+
 
