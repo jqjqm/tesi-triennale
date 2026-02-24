@@ -15,8 +15,8 @@ Script implementati nel linguaggio di algebra computazionale **MAGMA** per il ca
     * **Caratteristica 2:** Gestione dedicata tramite enumerazione diretta.
 
 * **Curve di Genere 2 di equazione $y^2=f(x)$:**
-    * **Ottimizzazione:** Per campi piccoli si sfruttano cambi di variabile ed osservazioni sul twist quadratico per ridurre lo spazio dei coefficienti. Per campi con cardinalità più alta, si analizza la distribuzione tramite metodo **Monte Carlo**.
-    * **Conteggio:** Per ogni $x$ in $\mathbb F_q$ si valuta il polinomio $f(x)$ e si conta il numero di soluzioni di $y^2=f(x)$.
+    * **Ottimizzazione:** Per campi piccoli si sfruttano cambi di variabile ed osservazioni sul twist quadratico per ridurre lo spazio dei coefficienti. Per campi di cardinalità intermedia l'algoritmo sfrutta la classificazione per gli invarianti assoluti di Igusa. Per campi con cardinalità più alta, si analizza la distribuzione tramite metodo **Monte Carlo**.
+    * **Conteggio:** Per ogni $x$ in $\mathbb F_q$ si valuta il polinomio $f(x)$ e si conta il numero di soluzioni di $y^2=f(x)$ oppure si usa l'algoritmo di Gaudry-Harley che generalizza l'algoritmo di Schoof per curve di genere 2.
 
 * **Curve di Genere 2 di equazione $y^2=f(x^2)$:**
    * **Ottimizzazione:** Con strategie simili a quelle utilizzate per le famiglie precedenti si riduce lo spazio dei coefficienti.
@@ -24,7 +24,7 @@ Script implementati nel linguaggio di algebra computazionale **MAGMA** per il ca
  
 * **Quartiche Piane:**
     * **Metodologia:** Campionamento mediante metodo **Monte Carlo**.
-    * **Conteggio Punti:** Il processo sfrutta l'esponenziazione modulare del polinomio di Frobenius ($x^q \pmod{f}$) per determinare il numero di radici del polinomio della curva nelle diverse carte affini e sulla retta all'infinito.
+    * **Conteggio Punti:** Il processo sfrutta l'esponenziazione modulare del polinomio di Frobenius ($x^q \pmod{f}$) per determinare il numero di radici del polinomio della curva nelle diverse carte affini e sulla retta all'infinito tramite massimo comune divisore.
 
 ### `Data/` - Dataset Sperimentali
 Risultati delle computazioni salvati in formato `.csv` e report riassuntivi in `.txt`.
