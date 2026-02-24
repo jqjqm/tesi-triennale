@@ -99,7 +99,7 @@ counthyperelliptic := procedure(q,N,text_filename)
     Puts(F_text, "\n--- Distribuzione ---");
     for i in [1..2*q+3] do
         if freq[i] ne 0 then
-            fprintf F_text, "%o: %o\n", i, freq[i];
+            fprintf F_text, "%o: %o\n", i-1, freq[i];
         end if;
     end for;
     
@@ -117,3 +117,4 @@ if assigned q then
 end if;
 
 quit;
+
